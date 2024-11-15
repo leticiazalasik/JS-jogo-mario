@@ -1,3 +1,5 @@
+
+
 * {
   margin: 0;
   padding: 0;
@@ -48,6 +50,21 @@ animation: clouds-animation 20s infinite linear;
     width: 400px;  /* Ajuste o tamanho da imagem */
     z-index: 10;  /* Certifique-se de que a imagem fica acima de outros elementos */
 }
+
+.jump-counter {
+  font-family: 'Gamer Station', sans-serif; /* Define a fonte */
+  margin: 1%;
+
+}
+
+.jump-counter span {
+  font-family: 'No Continue', sans-serif;
+  font-size: 34px; /* Define o tamanho da fonte */
+  color: black; /* Cor da fonte (branca) */
+  
+}
+
+
 
 
 @keyframes pipe-animation {

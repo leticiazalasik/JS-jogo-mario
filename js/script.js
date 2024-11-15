@@ -3,25 +3,38 @@ const pipe = document.querySelector('.pipe');
 const jumpSound = new Audio('../mario-jump-sound.mp3');
 const deathSound = new Audio('../mario-death-sound.mp3');
 const gameOver = document.querySelector('.game-over');
+const jumpCountDisplay = document.getElementById('jump-count');  // Elemento que exibe o número de pulos
+let successfulJumps = 0; // Variável para armazenar os pulos bem-sucedidos
+let marioHasJumped = false; // Variável para acompanhar se Mario já saltou
+let marioPassedPipe = false; // Variável para acompanhar se Mario passou o cano
+let pipePassed = false; // Nova variável para rastrear se o cano atual já passou
 
 const jump = () => {
-  mario.classList.add('jump');
-  jumpSound.play();
+  if (!marioHasJumped) { // Verifica se Mario não está no meio de um salto
+    mario.classList.add('jump');
+    jumpSound.play(); // Toca o som do pulo
+    marioHasJumped = true; // Indica que Mario saltou
 
-  setTimeout(() => {
-    mario.classList.remove('jump');
-  }, 500);
-
-};
+    setTimeout(() => {
+      mario.classList.remove('jump');
+      marioHasJumped = false; // Reseta após o salto
+      if (marioPassedPipe) { // Verifica se Mario passou completamente pelo cano
+        successfulJumps++;  // Incrementa a quantidade de pulos bem-sucedidos
+        jumpCountDisplay.textContent = successfulJumps;  // Atualiza a exibição do número de pulos
+        console.log('Pulo bem-sucedido! Total de pulos:', successfulJumps);
+        marioPassedPipe = false; // Reseta a variável após contar o pulo
+        pipePassed = false; // Reseta a variável para o próximo cano
+      }
+    }, 500); // Duração do salto
+  }
+}
 
 const loop = setInterval(() => {
+  const pipePosition = pipe.offsetLeft; // Obtém a posição esquerda do cano
+  const marioPosition = +window.getComputedStyle(mario).bottom.replace('px', ''); // Obtém a posição inferior do Mario e remove 'px' para obter um valor numérico
 
-  const pipePosition = pipe.offsetLeft;
-  const marioPosition = +window
-    .getComputedStyle(mario)
-    .bottom.replace('px', '');
-
-  if (pipePosition <= 120 && pipePosition > 0 && marioPosition < 80) {
+  // Verificar se Mario colidiu com o cano
+  if (pipePosition <= 120 && pipePosition > 0 && marioPosition <= 80) {
     pipe.style.animation = 'none';
     pipe.style.left = `${pipePosition}px`;
 
@@ -37,12 +50,18 @@ const loop = setInterval(() => {
 
     clearInterval(loop);
   }
+
+  // Verificar se Mario passou completamente pelo cano sem colidir
+  if (pipePosition < 0 && marioHasJumped && !pipePassed) {
+    marioPassedPipe = true; // Indica que Mario passou pelo cano
+    pipePassed = true; // Indica que o cano atual foi contabilizado
+  }
 }, 10);
 
 document.addEventListener('keydown', jump);
 
 document.addEventListener("keydown", function (event) {
-    if (event.key === "Enter") {
-      this.location.reload();
-    }
-  });
+  if (event.key === "Enter") {
+    this.location.reload();
+  }
+});
