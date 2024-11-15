@@ -9,10 +9,20 @@ let successfulJumps = 0; // Variável para armazenar os pulos bem-sucedidos
 let marioHasJumped = false; // Variável para acompanhar se Mario já saltou
 let marioPassedPipe = false; // Variável para acompanhar se Mario passou o cano
 let pipePassed = false; // Nova variável para rastrear se o cano atual já passou
+const backgroundMusic = new Audio('../background-music.mp3'); // Adiciona a música de fundo
+
 
 // Carrega a maior pontuação da sessão atual do sessionStorage
 let highScore = sessionStorage.getItem('highScore') || 0;
 highScoreDisplay.textContent = highScore;
+
+const startBackgroundMusic = () => {
+  backgroundMusic.loop = true; // Define a música de fundo para repetir
+  backgroundMusic.play(); // Toca a música de fundo
+}
+
+document.addEventListener('DOMContentLoaded', startBackgroundMusic);
+
 
 const jump = () => {
   if (!marioHasJumped) { // Verifica se Mario não está no meio de um salto
@@ -52,6 +62,10 @@ const loop = setInterval(() => {
 
     deathSound.play();
     gameOver.style.display = 'block';
+
+    backgroundMusic.pause(); // Para a música de fundo
+backgroundMusic.currentTime = 0; // Reseta a música de fundo
+
 
     // Atualiza a maior pontuação se a pontuação atual for maior
     if (successfulJumps > highScore) {
